@@ -1,15 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Grid,
-  Alert,
-} from "@mui/material";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { Message } from "primereact/message";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -32,64 +26,74 @@ function Login() {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          mt: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Iniciar Sesión
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Usuario"
-            name="username"
-            autoComplete="username"
-            autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+    <div className="flex align-items-center justify-content-center">
+      <div className="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+        {/* <Card title="Iniciar Sesión"> */}
+        <div className="text-center mb-5">
+          <img
+            src="/images/logoapp.png"
+            alt="hyper"
+            height={100}
+            className="mb-3"
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Contraseña"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Entrar
-          </Button>
-        </Box>
+          <div className="text-900 text-3xl font-medium mb-3">
+            Bienvenido a EvaluAPP
+          </div>
+          <span className="text-600 font-medium line-height-3">
+            ¿No tiene cuenta?
+          </span>
+          <a className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">
+            Crear una
+          </a>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="p-field">
+            <label
+              htmlFor="username"
+              className="block text-900 font-medium mb-2"
+            >
+              Usuario
+            </label>
+            <InputText
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="w-full mb-3"
+            />
+          </div>
+          <div className="p-field">
+            <label htmlFor="password">Contraseña</label>
+            <InputText
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full mb-3"
+            />
+          </div>
+          <div className="flex align-items-center justify-content-between mb-6">
+            <div className="flex align-items-center">
+              <label htmlFor="rememberme">Remember me</label>
+            </div>
+            <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">
+              Recuperar contraseña
+            </a>
+          </div>
+          <Button label="Entrar" icon="pi pi-user" className="w-full" />
+        </form>
         {message && (
-          <Alert
+          <Message
             severity={
               message === "Inicio de sesión exitoso" ? "success" : "error"
             }
-            sx={{ mt: 2 }}
-          >
-            {message}
-          </Alert>
+            text={message}
+          />
         )}
-      </Box>
-    </Container>
+        {/* </Card> */}
+      </div>
+    </div>
   );
 }
 

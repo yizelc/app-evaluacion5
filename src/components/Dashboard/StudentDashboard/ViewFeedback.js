@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../../services/api';
-import '../../../styles/ViewFeedback.css'; // Crea este archivo para estilos
+import React, { useEffect, useState } from "react";
+import api from "../../../services/api";
+import Navbar from "../../Navbar"; // Importamos Navbar
+import { DataTable } from "primereact/datatable"; // DataTable de PrimeReact
+import { Column } from "primereact/column"; // Columnas para la tabla
+import { Card } from "primereact/card"; // Card para encapsular el contenido
 
 function ViewFeedback() {
   const [feedback, setFeedback] = useState([]);
@@ -8,11 +11,11 @@ function ViewFeedback() {
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await api.get('/evaluations'); // Suponiendo que las evaluaciones incluyen feedback
+        const response = await api.get("/evaluations"); // Asumiendo que las evaluaciones tienen feedback
         setFeedback(response.data);
       } catch (error) {
         console.error(error);
-        alert('Error al obtener la retroalimentación');
+        alert("Error al obtener la retroalimentación");
       }
     };
 
@@ -20,20 +23,25 @@ function ViewFeedback() {
   }, []);
 
   return (
-    <div className="view-feedback">
-      <h3>Retroalimentación de Evaluaciones</h3>
-      {feedback.length === 0 ? (
-        <p>No hay retroalimentación disponible.</p>
-      ) : (
-        <ul>
-          {feedback.map((fb) => (
-            <li key={fb.id}>
-              <strong>{fb.title}</strong>
-              <p>Preguntas respondidas: {fb.questions.length}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div>
+      <Navbar />
+
+      {/* Card para encapsular el contenido */}
+      <Card title="Retroalimentación de Evaluaciones">
+        {feedback.length === 0 ? (
+          <p>No hay retroalimentación disponible.</p>
+        ) : (
+          <DataTable
+            value={feedback}
+            paginator
+            rows={10}
+            className="p-datatable-gridlines"
+          >
+            <Column field="title" header="Título" />
+            <Column field="questions.length" header="Preguntas Respondidas" />
+          </DataTable>
+        )}
+      </Card>
     </div>
   );
 }

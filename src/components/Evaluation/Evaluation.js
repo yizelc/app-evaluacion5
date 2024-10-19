@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../../services/api';
-import { AppBar, Toolbar, Typography, Button, Container, Box, Grid } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import api from "../../services/api";
+import Navbar from "../Navbar"; // Incluimos el componente Navbar
+import { Button } from "primereact/button"; // Reemplazamos Button de Material-UI por PrimeReact
+import { InputText } from "primereact/inputtext"; // Para los campos de texto
+import { Card } from "primereact/card"; // Para encapsular secciones
+import { Menubar } from "primereact/menubar"; // Para reemplazar AppBar
 
 function Evaluation() {
   const [evaluations, setEvaluations] = useState([]);
@@ -11,11 +15,11 @@ function Evaluation() {
   useEffect(() => {
     const fetchEvaluations = async () => {
       try {
-        const response = await api.get('/evaluations');
+        const response = await api.get("/evaluations");
         setEvaluations(response.data);
       } catch (error) {
         console.error(error);
-        alert('Error al obtener las evaluaciones');
+        alert("Error al obtener las evaluaciones");
       }
     };
 
@@ -33,145 +37,114 @@ function Evaluation() {
     e.preventDefault();
     try {
       // Aquí podrías enviar las respuestas a la API
-      console.log('Respuestas:', responses);
-      alert('Evaluación completada');
+      console.log("Respuestas:", responses);
+      alert("Evaluación completada");
       setSelectedEvaluation(null);
       setResponses({});
     } catch (error) {
       console.error(error);
-      alert('Error al enviar las respuestas');
+      alert("Error al enviar las respuestas");
     }
   };
+
+  const items = [
+    {
+      label: "Inicio",
+      icon: "pi pi-home",
+      command: () => {
+        window.location = "/main";
+      },
+    },
+    {
+      label: "Panel del Docente",
+      icon: "pi pi-users",
+      command: () => {
+        window.location = "/teacher-dashboard";
+      },
+    },
+    {
+      label: "Panel del Estudiante",
+      icon: "pi pi-user",
+      command: () => {
+        window.location = "/student-dashboard";
+      },
+    },
+    {
+      label: "Evaluaciones",
+      icon: "pi pi-list",
+      command: () => {
+        window.location = "/evaluations";
+      },
+    },
+    {
+      label: "Reportes",
+      icon: "pi pi-chart-bar",
+      command: () => {
+        window.location = "/reports";
+      },
+    },
+  ];
 
   if (selectedEvaluation) {
     return (
       <div className="evaluation-container">
-
-        <AppBar position="static">
-                  <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                      <Link to="/main" style={{ color: 'inherit', textDecoration: 'none' }}>
-                      {selectedEvaluation.title}
-                      </Link>
-                    </Typography>
-                    <Button color="inherit" component={Link} to="/teacher-dashboard">
-                      Panel del Docente
-                    </Button>
-                    <Button color="inherit" component={Link} to="/student-dashboard">
-                      Panel del Estudiante
-                    </Button>
-                    <Button color="inherit" component={Link} to="/evaluations">
-                      Evaluaciones
-                    </Button>
-                    <Button color="inherit" component={Link} to="/reports">
-                      Reportes
-                    </Button>
-                  </Toolbar>
-        </AppBar>
-        <Container>
-                <Box sx={{ mt: 5 }}>
-                  <Grid container spacing={2} justifyContent="center">
-                    <Grid item xs={12}>
-                      <Typography variant="h4" component="h2" align="center">
-                      Evaluaciones Disponibles
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                    <form onSubmit={handleSubmit}>
-                      {selectedEvaluation.questions.map((question, index) => (
-                        <div key={index} className="form-group">
-                          <label>{question}</label>
-                          <input
-                            type="text"
-                            value={responses[index] || ''}
-                            onChange={(e) => handleInputChange(index, e.target.value)}
-                            required
-                          />
-                        </div>
-                      ))}
-                      <button type="submit" className="submit-button">Enviar Respuestas</button>
-                      <button type="button" onClick={() => setSelectedEvaluation(null)} className="cancel-button">Cancelar</button>
-                  </form>
-                    </Grid>
-                    {/* <Grid item>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        component={Link}
-                        to="/teacher-dashboard/view-reports"
-                      >
-                        Ver Reportes
-                      </Button>
-                    </Grid> */}
-                  </Grid>
-                </Box>
-          </Container>
+        {/* Menubar de PrimeReact */}
+        <Navbar />
+        {/* Card para mostrar la evaluación */}
+        <Card title={selectedEvaluation.title}>
+          <form onSubmit={handleSubmit}>
+            {selectedEvaluation.questions.map((question, index) => (
+              <div key={index} className="p-field">
+                <label>{question}</label>
+                <InputText
+                  value={responses[index] || ""}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  required
+                />
+              </div>
+            ))}
+            <Button
+              label="Enviar Respuestas"
+              icon="pi pi-check"
+              className="p-button-success"
+              type="submit"
+            />
+            <Button
+              label="Cancelar"
+              icon="pi pi-times"
+              className="p-button-danger"
+              onClick={() => setSelectedEvaluation(null)}
+            />
+          </form>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="evaluation-list">
+      {/* Menubar de PrimeReact */}
+      <Navbar />
 
-      <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <Link to="/main" style={{ color: 'inherit', textDecoration: 'none' }}>
-                Plataforma Educativa
-              </Link>
-            </Typography>
-            <Button color="inherit" component={Link} to="/teacher-dashboard">
-              Panel del Docente
-            </Button>
-            <Button color="inherit" component={Link} to="/student-dashboard">
-              Panel del Estudiante
-            </Button>
-            <Button color="inherit" component={Link} to="/evaluations">
-              Evaluaciones
-            </Button>
-            <Button color="inherit" component={Link} to="/reports">
-              Reportes
-            </Button>
-          </Toolbar>
-        </AppBar>
-
-
-      <Container>
-        <Box sx={{ mt: 5 }}>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12}>
-              <Typography variant="h4" component="h2" align="center">
-              Evaluaciones Disponibles
-              </Typography>
-            </Grid>
-            <Grid item>
-              {evaluations.length === 0 ? (
-                <p>No hay evaluaciones disponibles.</p>
-                ) : (
-                  <ul>
-                    {evaluations.map((evaluation) => (
-                      <li key={evaluation.id}>
-                        <strong>{evaluation.title}</strong>
-                        <button onClick={() => setSelectedEvaluation(evaluation)} className="start-button">Comenzar Evaluación</button>
-                      </li>
-                    ))}
-                  </ul>
-              )}
-            </Grid>
-            {/* <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                component={Link}
-                to="/teacher-dashboard/view-reports"
-              >
-                Ver Reportes
-              </Button>
-            </Grid> */}
-          </Grid>
-        </Box>
-      </Container>
-
+      {/* Card para la lista de evaluaciones */}
+      <Card title="Evaluaciones Disponibles">
+        {evaluations.length === 0 ? (
+          <p>No hay evaluaciones disponibles.</p>
+        ) : (
+          <ul>
+            {evaluations.map((evaluation) => (
+              <li key={evaluation.id}>
+                <strong>{evaluation.title}</strong>
+                <Button
+                  label="Comenzar Evaluación"
+                  onClick={() => setSelectedEvaluation(evaluation)}
+                  className="p-button-info"
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
     </div>
   );
 }
